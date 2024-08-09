@@ -156,7 +156,7 @@ if uploaded_files:
                     title=' ',
                     xaxis_title='时间',
                     yaxis_title='值',
-                    xaxis_rangeslider_visible=True,
+                    xaxis_rangeslider_visible=False,
                     xaxis=dict(
                         tickvals=filtered_df.index[x_values],
                         ticktext=x_labels,
