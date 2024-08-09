@@ -165,7 +165,7 @@ if uploaded_files:
                         titlefont=dict(size=axis_font_size, family="Times New Roman", color='#000000')
                     ),
                     yaxis=dict(
-                        tickfont=dict(size=axis_font_size,family="Times New Roman", color='#000000')
+                        tickfont=dict(size=axis_font_size,family="Times New Roman", color='#000000'),
                         titlefont=dict(size=axis_font_size, family="Times New Roman", color='#000000')
                     ),
                     legend=dict(
