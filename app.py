@@ -161,7 +161,7 @@ if uploaded_files:
                         tickvals=filtered_df.index[x_values],
                         ticktext=x_labels,
                         tickfont=dict(size=axis_font_size, family="Times New Roman", color='#000000'),
-                        tickformat='%Y-%m-%d %H:%M:%S'
+                        tickformat='%Y-%m-%d %H:%M:%S',
                         titlefont=dict(size=axis_font_size, family="Times New Roman", color='#000000')
                     ),
                     yaxis=dict(
