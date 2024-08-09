@@ -153,7 +153,7 @@ if uploaded_files:
                     ))
 
                 fig.update_layout(
-                    title='选中列的折线图',
+                    title=' ',
                     xaxis_title='时间',
                     yaxis_title='值',
                     xaxis_rangeslider_visible=True,
