@@ -99,7 +99,7 @@ if page == "结果出图":
                 mime="text/csv"
             )
 
-            selected_columns = st.multiselect("选择要绘制的列", extracted_df.columns[1:])
+            selected_columns = st.multiselect("选择要绘制的列", extracted_df.columns[0:])
 
             if selected_columns:
                 st.write(f"正在生成选中列的折线图...")
