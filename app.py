@@ -177,10 +177,10 @@ if page == "结果出图":
                         ),
                         legend=dict(
                             orientation="v",
-                            yanchor="bottom",
-                            y=1.02,
-                            xanchor="center",
-                            x=0.5,
+                            yanchor="top",
+                            y=1,
+                            xanchor="left",
+                            x=1.02,
                             font=dict(
                                 size=legend_font_size
                             ),
