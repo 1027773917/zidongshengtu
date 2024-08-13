@@ -127,24 +127,47 @@ if page == "结果出图":
                     axis_font_size = st.slider("选择坐标轴标注字体大小", min_value=10, max_value=30, value=20)
                     legend_font_size = st.slider("选择图例标注字体大小", min_value=10, max_value=30, value=20)
 
+                    # Y轴范围输入
+                    y_axis_min = st.text_input("输入Y轴最小值", value=str(filtered_df[selected_columns].min().min()))
+                    y_axis_max = st.text_input("输入Y轴最大值", value=str(filtered_df[selected_columns].max().max()))
+
+                    try:
+                        y_axis_range = (float(y_axis_min), float(y_axis_max))
+                    except ValueError:
+                        st.error("请输入有效的Y轴范围。")
+                        y_axis_range = (filtered_df[selected_columns].min().min(), filtered_df[selected_columns].max().max())
+
+                    title_text = st.text_input("输入图像标题", value="数据折线图")
+                    title_font_size = st.slider("选择标题字体大小", min_value=10, max_value=50, value=25)
+
+                    # 图例内容修改
+                    legend_names = st.text_input("输入图例内容（用逗号分隔）", value=",".join(selected_columns))
+                    legend_names_list = [name.strip() for name in legend_names.split(",")]
+
                     num_ticks = 60
                     x_values = np.linspace(0, len(filtered_df) - 1, num_ticks, dtype=int)
                     x_labels = filtered_df.index[x_values].strftime('%Y-%m-%d %H:%M:%S')
 
                     fig = go.Figure()
 
-                    for column in selected_columns:
+                    for column, legend_name in zip(selected_columns, legend_names_list):
                         fig.add_trace(go.Scatter(
                             x=filtered_df.index,
                             y=filtered_df[column],
                             mode='lines+markers',
-                            name=column,
+                            name=legend_name,
                             line=dict(width=line_width),
                             marker=dict(size=marker_size)
                         ))
 
                     fig.update_layout(
-                        title=' ',
+                        title=dict(
+                            text=title_text,
+                            font=dict(size=title_font_size),
+                            x=0.5,  # 将标题居中
+                            xanchor='center',
+                            y = 0.94
+                    ),
                         xaxis_title='',
                         yaxis_title='',
                         xaxis_rangeslider_visible=False,
@@ -161,9 +184,11 @@ if page == "结果出图":
                                 size=axis_font_size,
                                 family="Times New Roman",
                                 color='#000000'
-                            )
+                            ),
+                            showgrid=False,  # 隐藏横坐标网格线
                         ),
                         yaxis=dict(
+                            range=y_axis_range,
                             tickfont=dict(
                                 size=axis_font_size,
                                 family="Times New Roman",
@@ -173,22 +198,32 @@ if page == "结果出图":
                                 size=axis_font_size,
                                 family="Times New Roman",
                                 color='#000000'
-                            )
+                            ),
+                            showgrid=True,  # 显示纵坐标网格线
+                            gridwidth=1,
+                            gridcolor='LightGray'
                         ),
                         legend=dict(
-                            orientation="v",
-                            yanchor="middle",
-                            y=0.5,
-                            xanchor="left",
+                            orientation="v",  # 垂直方向排列
+                            yanchor="middle",  # y 轴锚定到中间
+                            y=0.5,  # y 坐标为 0.5 (垂直居中)
+                            xanchor="left",  # x 轴锚定到左边
                             x=1.02,
                             font=dict(
                                 size=legend_font_size
-                            ),
-                            title_text=''
-                        )
+                            )
+                        ),
+                        margin=dict(l=100, r=150, t=100, b=100),  # 外边距，增加顶部边距用于标题
+                        plot_bgcolor='rgba(255, 255, 255, 1)',  # 背景颜色设置为白色
+                        paper_bgcolor='rgba(255, 255, 255, 1)',  # 设置为黑色
+                        width=800,  # 图表宽度
+                        height=500  # 图表高度
                     )
 
                     st.plotly_chart(fig, use_container_width=True)
+
+
+
 
 # 第二功能区：逐步减小列值生成文件
 if page == "高温转低温":
