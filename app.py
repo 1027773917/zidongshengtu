@@ -177,8 +177,8 @@ if page == "结果出图":
                         ),
                         legend=dict(
                             orientation="v",
-                            yanchor="top",
-                            y=1,
+                            yanchor="middle",
+                            y=0.5,
                             xanchor="left",
                             x=1.02,
                             font=dict(
