@@ -145,8 +145,8 @@ if page == "结果出图":
 
                     fig.update_layout(
                         title=' ',
-                        xaxis_title='时间',
-                        yaxis_title='值',
+                        xaxis_title='',
+                        yaxis_title='',
                         xaxis_rangeslider_visible=False,
                         xaxis=dict(
                             tickvals=filtered_df.index[x_values],
