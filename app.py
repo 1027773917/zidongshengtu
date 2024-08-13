@@ -176,7 +176,7 @@ if page == "结果出图":
                             )
                         ),
                         legend=dict(
-                            orientation="h",
+                            orientation="v",
                             yanchor="bottom",
                             y=1.02,
                             xanchor="center",
