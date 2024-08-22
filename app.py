@@ -4,6 +4,7 @@ import plotly.graph_objects as go
 import io
 import numpy as np
 import os
+import zipfile
 
 # 页面标题
 st.title('希望将省下来的时间用来与你共度，共享这段珍贵的时光。')
@@ -224,8 +225,7 @@ if page == "结果出图":
 
 
 
-
-# 第二功能区：逐步减小列值生成文件
+# 第二功能区：高转低
 if page == "高温转低温":
     st.header("高温转低温工具")
 
@@ -240,16 +240,29 @@ if page == "高温转低温":
         else:
             df = pd.read_csv(uploaded_file, encoding="GB2312")
             file_counter = 2
+            zip_buffer = io.BytesIO()
 
-            if column_name not in df.columns:
-                st.error(f"列 '{column_name}' 不存在于文件中")
-            else:
-                while df[column_name].max() > 0:
-                    df[column_name] = df[column_name].apply(lambda x: max(0, x - decrement_value) if pd.notna(x) else x)
-                    new_file_path = f"{save_path_prefix}{file_counter}.csv"
-                    df.to_csv(new_file_path, index=False, encoding="GB2312")
-                    st.write(f"生成文件: {new_file_path}")
-                    file_counter += 1
+            with zipfile.ZipFile(zip_buffer, "a", zipfile.ZIP_DEFLATED, False) as zf:
+                if column_name not in df.columns:
+                    st.error(f"列 '{column_name}' 不存在于文件中")
+                else:
+                    while df[column_name].max() > 0:
+                        df[column_name] = df[column_name].apply(
+                            lambda x: max(0, x - decrement_value) if pd.notna(x) else x)
+                        csv_buffer = io.BytesIO()
+                        df.to_csv(csv_buffer, index=False, encoding="GB2312")
+                        csv_buffer.seek(0)
+                        new_file_name = f"{save_path_prefix}{file_counter}.csv"
+                        zf.writestr(new_file_name, csv_buffer.getvalue())
+                        file_counter += 1
+
+            zip_buffer.seek(0)
+            st.download_button(
+                label="下载所有文件的ZIP压缩包",
+                data=zip_buffer,
+                file_name=f"{save_path_prefix}_all_files.zip",
+                mime="application/zip"
+            )
 
 # 第三功能区：标准文件与替换文件生成
 if page == "低温转高温":
@@ -267,13 +280,26 @@ if page == "低温转高温":
             replace_df = pd.read_csv(replace_file, encoding="GB2312")
 
             file_counter = 1
-            for index, replace_row in replace_df.iterrows():
-                temp_output_file = f"{save_path_prefix}{file_counter}.csv"
-                modified_df = standard_df.copy()
+            zip_buffer = io.BytesIO()
 
-                modified_df.loc[modified_df['控温温度'].notna(), '控温温度'] = replace_row.iloc[0]
-                modified_df['限流值'] = replace_row.iloc[1]
+            with zipfile.ZipFile(zip_buffer, "a", zipfile.ZIP_DEFLATED, False) as zf:
+                for index, replace_row in replace_df.iterrows():
+                    modified_df = standard_df.copy()
 
-                modified_df.to_csv(temp_output_file, index=False, encoding="GB2312")
-                st.write(f'生成了文件: {temp_output_file}')
-                file_counter += 1
+                    modified_df.loc[modified_df['控温温度'].notna(), '控温温度'] = replace_row.iloc[0]
+                    modified_df['限流值'] = replace_row.iloc[1]
+
+                    csv_buffer = io.BytesIO()
+                    modified_df.to_csv(csv_buffer, index=False, encoding="GB2312")
+                    csv_buffer.seek(0)
+                    new_file_name = f"{save_path_prefix}{file_counter}.csv"
+                    zf.writestr(new_file_name, csv_buffer.getvalue())
+                    file_counter += 1
+
+            zip_buffer.seek(0)
+            st.download_button(
+                label="下载所有文件的ZIP压缩包",
+                data=zip_buffer,
+                file_name=f"{save_path_prefix}_all_files.zip",
+                mime="application/zip"
+            )
