@@ -3,3 +3,4 @@ pandas
 docxtpl
 python-docx
 Pillow
+openpyxl
