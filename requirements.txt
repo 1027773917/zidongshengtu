@@ -4,12 +4,5 @@ docxtpl
 python-docx
 Pillow
 openpyxl
-json
-datetime
-base64
-pathlib
-time
-fitz
+PyMuPDF
 requests
-docx.shared
-docx
